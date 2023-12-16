@@ -1,0 +1,4 @@
+.env
+research_papers/*
+.DS_Store
+research.db
