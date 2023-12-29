@@ -1,0 +1,17 @@
+{
+    "type": "function",
+    "function": {
+        "name": "read_pdf",
+        "description": "Read the content of a PDF",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "path": {
+                    "type": "string",
+                    "description": "The filepath for the PDF document"
+                }
+            },
+            "required": ["path"]
+        }
+    }
+}

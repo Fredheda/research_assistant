@@ -1,0 +1,17 @@
+{
+    "type": "function",
+    "function": {
+        "name": "update_table",
+        "description": "Executes an sql query on the research_papers table which will update the table",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "SQL query"
+                }
+            },
+            "required": ["query"]
+        }
+    }
+}

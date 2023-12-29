@@ -2,3 +2,5 @@
 research_papers/*
 .DS_Store
 research.db
+test_notebooks/*
+*checkpoint*

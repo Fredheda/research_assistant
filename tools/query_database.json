@@ -1,0 +1,17 @@
+{
+    "type": "function",
+    "function": {
+        "name": "query_database",
+        "description": "Query the research_papers table in the database",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "the sql query"
+                }
+            },
+            "required": ["query"]
+        }
+    }
+}
