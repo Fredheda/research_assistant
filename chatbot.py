@@ -9,7 +9,7 @@ from pypdf import PdfReader
 import sqlite3
 _ = load_dotenv()
 
-from utils import read_prompt, load_tool, load_tools
+from utils import read_prompt, load_tool, load_tools, construct_messages
 
 open_ai_key = os.getenv("OPEN_AI_KEY")
 open_ai_organisation = os.getenv("OPEN_AI_ORG")
@@ -32,12 +32,25 @@ def run_chat(prompt,messages, model_name="gpt-4-1106-preview",tool_path='tools',
     ).choices[0].message.content
     
     return response
-        
+
+def ReAct(prompt,prev_messages, model_name="gpt-4-1106-preview",tool_path='tools', tool_choice='none'):
+    """ React Flow """
+    
+    #Categorize message type
+    messages = construct_messages()
+    
+    category = run_chat(prompt,messages)
+    
+    messages = construct_messages(category=category, step='chat', prev_messages=prev_messages)
+    response = run_chat(prompt,messages)
+    
+    
+    return response
 
 
 client = OpenAI()
-system_message = read_prompt('base_prompts/system_message.txt')
-messages = [{"role": "system", "content": system_message}]
+#system_message = read_prompt('base_prompts/system_message.txt')
+messages = []
 
 
 # Streamlit
@@ -55,6 +68,6 @@ if prompt := st.chat_input(placeholder="Enter your question here"):
     st.chat_message("user").write(prompt)
     
     with st.chat_message("assistant"):
-        response = run_chat(prompt,messages)
+        response = ReAct(prompt,messages)
         st.session_state.chat_messages.append({"role": "assistant", "content": response})
         st.write(response)

@@ -1,0 +1,4 @@
+You are a personal assistant.
+You should act as a friendly chatbot
+
+Previous conversation history and the user's prompt are given below.

@@ -18,6 +18,23 @@ def load_tools(tool_path):
         path = os.path.join(tool_path, tool)
         tools.append(load_tool(path))
     return tools
+
+def construct_messages(category='none', step='init', prev_messages=[]):
+        
+    if step == 'init':
+        system_message = read_prompt('base_prompts/system_message.txt')
+        messages = [{"role": "system", "content": system_message}]
+    
+    elif category=='chatting':
+        system_message = read_prompt('base_prompts/chatting.txt')
+        messages = [{"role": "system", "content": system_message}]
+    
+    if prev_messages != []:
+        for msg in prev_messages:
+            messages.append(msg)
+        
+        
+    return messages
     
 
 # Print the contents
