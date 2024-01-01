@@ -28,10 +28,15 @@ def construct_messages(category='none', step='init', prev_messages=[]):
     elif category=='chatting':
         system_message = read_prompt('base_prompts/chatting.txt')
         messages = [{"role": "system", "content": system_message}]
+        
+    elif category=='research' and step=='thought':
+        system_message = read_prompt('base_prompts/research_thought.txt')
+        messages = [{"role": "system", "content": system_message}]
     
-    if prev_messages != []:
-        for msg in prev_messages:
-            messages.append(msg)
+    #if prev_messages != []:
+    messages = []
+    for msg in prev_messages:
+        messages.append(msg)
         
         
     return messages

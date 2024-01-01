@@ -31,21 +31,39 @@ def run_chat(prompt,messages, model_name="gpt-4-1106-preview",tool_path='tools',
         temperature=0
     ).choices[0].message.content
     
-    return response
+    return response, messages
 
 def ReAct(prompt,prev_messages, model_name="gpt-4-1106-preview",tool_path='tools', tool_choice='none'):
     """ React Flow """
     
     #Categorize message type
-    messages = construct_messages()
+    messages = construct_messages()    
+    category, prev_messages = run_chat(prompt,messages)
+    st.write("Category: ", category)
+    if category=='chatting':
+        messages = construct_messages(category=response, step='chat', prev_messages=prev_messages)
+        response, _ = run_chat(prompt,messages)
+        return response
+    else:
+        i=0
+        response = ""
+        while response != 'I know the final answer':
+            prev_messages = construct_messages(category=response, step='thought', prev_messages=prev_messages)
+            st.write("THOUGHT MESSAGES: ", prev_messages)
+            response, prev_messages = run_chat(prompt,prev_messages)
+            st.write("THOUGHT: ", response)
+            prev_messages = construct_messages(category=response, step='act', prev_messages=prev_messages)
+            response, prev_messages = run_chat(prompt,prev_messages)
+            st.write("ACTION: ", response)
+            prev_messages = construct_messages(category=response, step='observe', prev_messages=prev_messages)
+            response, prev_messages = run_chat(prompt,prev_messages)
+            st.write("OBSERVATION: ", response)
+            i +=1
+            if i>2:
+                return "Timed Out"
+        return response, prev_messages
     
-    category = run_chat(prompt,messages)
     
-    messages = construct_messages(category=category, step='chat', prev_messages=prev_messages)
-    response = run_chat(prompt,messages)
-    
-    
-    return response
 
 
 client = OpenAI()
@@ -68,6 +86,6 @@ if prompt := st.chat_input(placeholder="Enter your question here"):
     st.chat_message("user").write(prompt)
     
     with st.chat_message("assistant"):
-        response = ReAct(prompt,messages)
+        response, messages = ReAct(prompt,messages)
         st.session_state.chat_messages.append({"role": "assistant", "content": response})
         st.write(response)
