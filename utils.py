@@ -19,20 +19,23 @@ def load_tools(tool_path):
         tools.append(load_tool(path))
     return tools
 
-def construct_messages(category='none', step='init', prev_messages=[]):
-        
+def construct_messages(conversation_hist,user_prompt, category='none', step='init'):
+    
+    message_string = ""
+    if conversation_hist != []:
+        for msg in conversation_hist:
+            message_string += f"{msg['role']}: {msg['content']}\n\n"
+    
     if step == 'init':
         system_message = read_prompt('base_prompts/system_message.txt')
-        messages = [{"role": "system", "content": system_message}]
     
     elif category=='chatting':
         system_message = read_prompt('base_prompts/chatting.txt')
-        messages = [{"role": "system", "content": system_message}]
-    
-    if prev_messages != []:
-        for msg in prev_messages:
-            messages.append(msg)
         
+    elif category=='research' and step=='thought':
+        system_message = read_prompt('base_prompts/research_thought.txt')
+    
+    messages = [{"role": "system", "content": system_message.format(user_question=user_prompt, conversation_history=message_string)}]    
         
     return messages
     
